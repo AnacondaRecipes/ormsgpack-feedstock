@@ -1,51 +1,62 @@
 {% set name = "ormsgpack" %}
-{% set version = "1.9.1" %}
+{% set version = "1.10.0" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/ormsgpack-{{ version }}.tar.gz
-  sha256: 3da6e63d82565e590b98178545e64f0f8506137b92bd31a2d04fd7c82baf5794
+  url: https://github.com/aviramha/{{ name }}/archive/refs/tags/{{ version }}.tar.gz
+  sha256: 5a9ab2b3eac58362e86db43c9fbfd5702795b389a6f981a631228c044af60c21
 
 build:
-  skip: true  # [py<38]
+  number: 0
   script:
     - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml
     - {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  number: 0
+  skip: true  # [py<39]
+  
 
 requirements:
   build:
     - {{ compiler('c') }}
-    - {{ stdlib('c') }}
     - {{ compiler('rust') }}
     - cargo-bundle-licenses
   host:
     - python
-    - maturin >=1.0,<2.0
     - pip
+    - maturin >=1.0,<2.0
   run:
     - python
 
-
 test:
+  source_files:
+    - tests
   imports:
     - ormsgpack
   commands:
     - pip check
+    - pytest -v tests
   requires:
     - pip
+    - pytest
+    - msgpack-python
+    - pydantic
+    - pytz
+    - python-dateutil
 
 about:
   home: https://github.com/aviramha/ormsgpack
   summary: Fast, correct Python msgpack library supporting dataclasses, datetimes, and numpy
   license: MIT AND Apache-2.0
+  license_family: MIT
   license_file:
     - LICENSE-APACHE
     - LICENSE-MIT
     - THIRDPARTY.yml
+  description: ormsgpack is a fast msgpack serialization library for Python derived from orjson, with native support for various Python types.
+  dev_url: https://github.com/aviramha/ormsgpack
+  doc_url: https://github.com/aviramha/ormsgpack/blob/master/README.md
 
 extra:
   recipe-maintainers:
