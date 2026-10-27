@@ -1,5 +1,5 @@
 {% set name = "ormsgpack" %}
-{% set version = "1.12.2" %}
+{% set version = "1.13.0" %}
 
 package:
   name: {{ name|lower }}
@@ -7,15 +7,14 @@ package:
 
 source:
   url: https://github.com/aviramha/{{ name }}/archive/refs/tags/{{ version }}.tar.gz
-  sha256: 58c8803dd833f979645976cf36a521a1036b66dde655abfa163129e9ebbe997f
+  sha256: 8ccb5af8d3704f7615b2ffd1b2855c6d3d5fcee9910c1718063497893a21b177
 
 build:
   number: 0
   script:
     - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml
     - {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  skip: true  # [py<310]
-  
+  skip: true  # [py<311]
 
 requirements:
   build:
